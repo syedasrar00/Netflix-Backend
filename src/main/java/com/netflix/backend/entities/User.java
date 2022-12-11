@@ -1,6 +1,7 @@
 package com.netflix.backend.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class User {
@@ -13,6 +14,8 @@ public class User {
     private String password;
     @Column(unique = true)
     private String phoneNumber;
+    @OneToMany(mappedBy = "user",cascade= CascadeType.ALL)
+    private List<Profile> profilesList;
 
     public User() {
     }
