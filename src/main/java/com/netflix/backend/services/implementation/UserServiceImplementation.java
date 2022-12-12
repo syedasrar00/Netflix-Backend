@@ -2,7 +2,9 @@ package com.netflix.backend.services.implementation;
 
 import com.netflix.backend.DTO.UserObject;
 import com.netflix.backend.entities.User;
+import com.netflix.backend.exceptions.ResourceNotFoundException;
 import com.netflix.backend.repositories.UserRepository;
+import com.netflix.backend.security.UserInSession;
 import com.netflix.backend.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImplementation implements UserServices {
+    @Autowired
+    private UserInSession userInSession;
     @Autowired
     private UserRepository userRepo;
     @Override
@@ -29,12 +33,18 @@ public class UserServiceImplementation implements UserServices {
 
     @Override
     public String activateSubscription() {
-
+        User user = userRepo.findByEmail(userInSession.getUserName()).orElseThrow(()-> new ResourceNotFoundException("user","username",userInSession.getUserName()));
+        if(user.isSubscription()){
+            return "User is already subscribed";
+        }
+        userRepo.save(user);
         return "Subscription activated successfully";
     }
     @Override
     public String deactivateSubscription() {
-
+        User user = userRepo.findByEmail(userInSession.getUserName()).orElseThrow(()-> new ResourceNotFoundException("user","username",userInSession.getUserName()));
+        user.setSubscription(false);
+        userRepo.save(user);
         return "Subscription cancelled successfully";
     }
 
