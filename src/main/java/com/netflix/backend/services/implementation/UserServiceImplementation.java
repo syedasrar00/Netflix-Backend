@@ -26,6 +26,18 @@ public class UserServiceImplementation implements UserServices {
         List<User> userList = userRepo.findAll();
         return userList.stream().map(e-> userToUserObject(e)).collect(Collectors.toList());
     }
+
+    @Override
+    public String activateSubscription() {
+
+        return "Subscription activated successfully";
+    }
+    @Override
+    public String deactivateSubscription() {
+
+        return "Subscription cancelled successfully";
+    }
+
     private User userObjectToUser(UserObject userObject){
         User user = new User();
         user.setEmail(userObject.getEmail());

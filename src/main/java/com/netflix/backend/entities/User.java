@@ -16,8 +16,26 @@ public class User {
     private String phoneNumber;
     @OneToMany(mappedBy = "user",cascade= CascadeType.ALL)
     private List<Profile> profilesList;
+    private boolean subscription;
 
     public User() {
+        this.subscription=false;
+    }
+
+    public List<Profile> getProfilesList() {
+        return profilesList;
+    }
+
+    public void setProfilesList(List<Profile> profilesList) {
+        this.profilesList = profilesList;
+    }
+
+    public boolean isSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(boolean subscription) {
+        this.subscription = subscription;
     }
 
     public int getId() {
