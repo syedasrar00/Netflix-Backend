@@ -4,23 +4,29 @@ import com.netflix.backend.DTO.UserObject;
 import com.netflix.backend.entities.User;
 import com.netflix.backend.exceptions.ResourceNotFoundException;
 import com.netflix.backend.repositories.UserRepository;
-import com.netflix.backend.security.UserInSession;
 import com.netflix.backend.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImplementation implements UserServices {
     @Autowired
-    private UserInSession userInSession;
+    HttpSession session;
     @Autowired
     private UserRepository userRepo;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Override
     public String createUser(UserObject userObject) {
         User user = userObjectToUser(userObject);
+        String password = user.getPassword();
+        String encodedPassword = passwordEncoder.encode(password);
+        user.setPassword(encodedPassword);
         userRepo.save(user);
         return "User created Successfully";
     }
@@ -33,17 +39,18 @@ public class UserServiceImplementation implements UserServices {
 
     @Override
     public String activateSubscription() {
-        User user = userRepo.findByEmail(userInSession.getUserName()).orElseThrow(()-> new ResourceNotFoundException("user","username",userInSession.getUserName()));
-        if(user.isSubscription()){
+        User user = userRepo.findByEmail((String) session.getAttribute("username")).orElseThrow(()-> new ResourceNotFoundException("user","username",(String) session.getAttribute("username")));
+        if(user.getSubscription()==1){
             return "User is already subscribed";
         }
+        user.setSubscription(1);
         userRepo.save(user);
         return "Subscription activated successfully";
     }
     @Override
     public String deactivateSubscription() {
-        User user = userRepo.findByEmail(userInSession.getUserName()).orElseThrow(()-> new ResourceNotFoundException("user","username",userInSession.getUserName()));
-        user.setSubscription(false);
+        User user = userRepo.findByEmail((String) session.getAttribute("username")).orElseThrow(()-> new ResourceNotFoundException("user","username",(String) session.getAttribute("username")));
+        user.setSubscription(0);
         userRepo.save(user);
         return "Subscription cancelled successfully";
     }
@@ -58,6 +65,7 @@ public class UserServiceImplementation implements UserServices {
     }
     private UserObject userToUserObject(User user){
         UserObject userObject = new UserObject();
+        userObject.setId(user.getId());
         userObject.setEmail(user.getEmail());
         userObject.setName(user.getName());
         userObject.setPassword(user.getPassword());

@@ -1,52 +1,41 @@
 package com.netflix.backend.entities;
 
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
-public class User implements UserDetails{
+@Table(name = "users")
+public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
     private String name;
-    @Column(unique = true)
     private String email;
     private String password;
-    @Column(unique = true)
     private String phoneNumber;
+    private int subscription;
     @OneToMany(mappedBy = "user",cascade= CascadeType.ALL)
-    private List<Profile> profilesList;
-    private boolean subscription;
-
+    private List<Profile> profiles = new ArrayList<>();
     public User() {
-        this.subscription=false;
     }
 
-    public List<Profile> getProfilesList() {
-        return profilesList;
-    }
-
-    public void setProfilesList(List<Profile> profilesList) {
-        this.profilesList = profilesList;
-    }
-
-    public boolean isSubscription() {
-        return subscription;
-    }
-
-    public void setSubscription(boolean subscription) {
-        this.subscription = subscription;
-    }
-
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -68,7 +57,7 @@ public class User implements UserDetails{
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return new ArrayList<>();
     }
 
     public String getPassword() {
@@ -92,12 +81,12 @@ public class User implements UserDetails{
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return true;
     }
 
     public void setPassword(String password) {
@@ -110,5 +99,21 @@ public class User implements UserDetails{
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public List<Profile> getProfiles() {
+        return profiles;
+    }
+
+    public void setProfiles(List<Profile> profiles) {
+        this.profiles = profiles;
+    }
+
+    public int getSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(int subscription) {
+        this.subscription = subscription;
     }
 }

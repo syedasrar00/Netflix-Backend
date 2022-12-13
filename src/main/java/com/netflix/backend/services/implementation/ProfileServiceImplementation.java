@@ -2,16 +2,24 @@ package com.netflix.backend.services.implementation;
 
 import com.netflix.backend.DTO.ProfileObject;
 import com.netflix.backend.entities.Profile;
+import com.netflix.backend.entities.User;
 import com.netflix.backend.exceptions.ResourceNotFoundException;
 import com.netflix.backend.repositories.ProfileRepository;
+import com.netflix.backend.repositories.UserRepository;
 import com.netflix.backend.services.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
+
 @Service
 public class ProfileServiceImplementation implements ProfileService {
     @Autowired
+    HttpSession session;
+    @Autowired
     private ProfileRepository profileRepository;
+    @Autowired
+    private UserRepository userRepository;
     @Override
     public String deleteProfile(int profileId) {
         Profile profile = profileRepository.findById(profileId).orElseThrow(()-> new ResourceNotFoundException("Profile","profileId",""+profileId));
@@ -20,8 +28,11 @@ public class ProfileServiceImplementation implements ProfileService {
     }
 
     @Override
-    public void addProfile(ProfileObject profile) {
-
+    public void addProfile(ProfileObject profileObject) {
+        String username = (String) session.getAttribute("username");
+        User user = userRepository.findByEmail(username).orElseThrow(()-> new ResourceNotFoundException("User","UserName",username));
+        Profile profile = profileObjectToProfile(profileObject);
+        user.getProfiles().add(profile);
     }
     private Profile profileObjectToProfile(ProfileObject profileObject ){
         Profile profile = new Profile();

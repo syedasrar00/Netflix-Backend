@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.util.List;
 
@@ -14,9 +13,9 @@ import java.util.List;
 public class UserController {
     @Autowired
     private UserServices userServices;
-    @PostMapping(value = "/user")
-    public ResponseEntity<String> createUser(@Valid @RequestBody UserObject user){
-        return new ResponseEntity<>(userServices.createUser(user), HttpStatus.OK);
+    @PostMapping("/user")
+    public ResponseEntity<String> createUser(@Valid @RequestBody UserObject userObject){
+        return new ResponseEntity<>(userServices.createUser(userObject), HttpStatus.OK);
     }
     @GetMapping("/all")
     public ResponseEntity<List<UserObject>> getAllUsers(){return new ResponseEntity<>(userServices.userList(),HttpStatus.OK);}

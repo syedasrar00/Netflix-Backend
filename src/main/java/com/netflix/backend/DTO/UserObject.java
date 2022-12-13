@@ -1,19 +1,30 @@
 package com.netflix.backend.DTO;
 
 import javax.validation.constraints.*;
+import java.util.UUID;
 
 public class UserObject {
-    @NotNull(message = "Name cannot be null")
+    private UUID id;
+    @NotEmpty(message = "name cannot be empty")
     private String name;
-    @Email(message = "Email should be valid")
+    @Email(message = "Not a valid email.")
     private String email;
-    @Min(value = 8, message = "Password should not be less than 8 characters")
-    @Max(value = 20, message = "Password should not be greater than 20 characters")
+    @NotEmpty
+    @Size(min=8, max=25, message ="password length must be between 8-25 characters")
     private String password;
-    @NotNull
+    @NotEmpty
+    @Size(min=10, message="Phone number cannot be at less than 10 characters")
     private String phoneNumber;
 
     public UserObject() {
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getName() {

@@ -1,13 +1,15 @@
 package com.netflix.backend.Authentication;
 
 public class UserAuthenticationResponse {
-    private final String jwt;
+    private String jwt;
 
-    public UserAuthenticationResponse(String jwt) {
-        this.jwt = jwt;
-    }
+    public UserAuthenticationResponse(){}
 
     public String getJwt() {
         return jwt;
+    }
+
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
     }
 }
