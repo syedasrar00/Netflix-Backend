@@ -8,14 +8,14 @@ import com.netflix.backend.repositories.ProfileRepository;
 import com.netflix.backend.repositories.UserRepository;
 import com.netflix.backend.services.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.server.Cookie;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpSession;
 
 @Service
 public class ProfileServiceImplementation implements ProfileService {
     @Autowired
-    HttpSession session;
+    Cookie cookie;
     @Autowired
     private ProfileRepository profileRepository;
     @Autowired
@@ -29,10 +29,14 @@ public class ProfileServiceImplementation implements ProfileService {
 
     @Override
     public void addProfile(ProfileObject profileObject) {
-        String username = (String) session.getAttribute("username");
+        String username = cookie.getName();
+        System.out.println(username);
         User user = userRepository.findByEmail(username).orElseThrow(()-> new ResourceNotFoundException("User","UserName",username));
         Profile profile = profileObjectToProfile(profileObject);
         user.getProfiles().add(profile);
+        profile.setUser(user);
+        profileRepository.save(profile);
+
     }
     private Profile profileObjectToProfile(ProfileObject profileObject ){
         Profile profile = new Profile();

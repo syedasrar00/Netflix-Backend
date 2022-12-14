@@ -21,13 +21,18 @@ public class User implements UserDetails {
     )
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
+
     private String name;
+    @Column(unique = true)
     private String email;
     private String password;
+    @Column(unique = true)
     private String phoneNumber;
     private int subscription;
-    @OneToMany(mappedBy = "user",cascade= CascadeType.ALL)
-    private List<Profile> profiles = new ArrayList<>();
+    @OneToMany(cascade= CascadeType.ALL,fetch = FetchType.EAGER)
+    private List<Profile> profiles;
+    @OneToMany(cascade= CascadeType.ALL,fetch = FetchType.EAGER)
+    private List<UserVideoHistory> userVideoHistories;
     public User() {
     }
 
@@ -45,6 +50,14 @@ public class User implements UserDetails {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<UserVideoHistory> getUserVideoHistories() {
+        return userVideoHistories;
+    }
+
+    public void setUserVideoHistories(List<UserVideoHistory> userVideoHistories) {
+        this.userVideoHistories = userVideoHistories;
     }
 
     public String getEmail() {

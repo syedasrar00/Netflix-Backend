@@ -17,8 +17,10 @@ public class UserController {
     public ResponseEntity<String> createUser(@Valid @RequestBody UserObject userObject){
         return new ResponseEntity<>(userServices.createUser(userObject), HttpStatus.OK);
     }
+    @PostMapping("/user/subscription")
+    public ResponseEntity<String> activateSubscription(){
+        return ResponseEntity.ok(userServices.activateSubscription());
+    }
     @GetMapping("/all")
     public ResponseEntity<List<UserObject>> getAllUsers(){return new ResponseEntity<>(userServices.userList(),HttpStatus.OK);}
-
-
 }

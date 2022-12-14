@@ -6,17 +6,17 @@ import com.netflix.backend.exceptions.ResourceNotFoundException;
 import com.netflix.backend.repositories.UserRepository;
 import com.netflix.backend.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.server.Cookie;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImplementation implements UserServices {
     @Autowired
-    HttpSession session;
+    Cookie cookie;
     @Autowired
     private UserRepository userRepo;
     @Autowired
@@ -36,10 +36,9 @@ public class UserServiceImplementation implements UserServices {
         List<User> userList = userRepo.findAll();
         return userList.stream().map(e-> userToUserObject(e)).collect(Collectors.toList());
     }
-
     @Override
     public String activateSubscription() {
-        User user = userRepo.findByEmail((String) session.getAttribute("username")).orElseThrow(()-> new ResourceNotFoundException("user","username",(String) session.getAttribute("username")));
+        User user = userRepo.findByEmail(cookie.getName()).orElseThrow(()-> new ResourceNotFoundException("user","username",cookie.getName()));
         if(user.getSubscription()==1){
             return "User is already subscribed";
         }
@@ -49,7 +48,7 @@ public class UserServiceImplementation implements UserServices {
     }
     @Override
     public String deactivateSubscription() {
-        User user = userRepo.findByEmail((String) session.getAttribute("username")).orElseThrow(()-> new ResourceNotFoundException("user","username",(String) session.getAttribute("username")));
+        User user = userRepo.findByEmail(cookie.getName()).orElseThrow(()-> new ResourceNotFoundException("user","username",cookie.getName()));
         user.setSubscription(0);
         userRepo.save(user);
         return "Subscription cancelled successfully";
@@ -61,6 +60,7 @@ public class UserServiceImplementation implements UserServices {
         user.setName(userObject.getName());
         user.setPassword(userObject.getPassword());
         user.setPhoneNumber(userObject.getPhoneNumber());
+        user.setProfiles(userObject.getProfiles());
         return user;
     }
     private UserObject userToUserObject(User user){
@@ -70,6 +70,7 @@ public class UserServiceImplementation implements UserServices {
         userObject.setName(user.getName());
         userObject.setPassword(user.getPassword());
         userObject.setPhoneNumber(user.getPhoneNumber());
+        userObject.setProfiles(user.getProfiles());
         return userObject;
     }
 }

@@ -1,7 +1,5 @@
 package com.netflix.backend.DTO;
 
-import org.springframework.stereotype.Service;
-
 import javax.validation.constraints.NotEmpty;
 
 public class ProfileObject {

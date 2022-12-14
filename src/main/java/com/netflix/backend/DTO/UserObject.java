@@ -1,6 +1,11 @@
 package com.netflix.backend.DTO;
 
+import com.netflix.backend.entities.Profile;
+import com.netflix.backend.entities.UserVideoHistory;
+
 import javax.validation.constraints.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class UserObject {
@@ -15,8 +20,18 @@ public class UserObject {
     @NotEmpty
     @Size(min=10, message="Phone number cannot be at less than 10 characters")
     private String phoneNumber;
+    private List<Profile> profiles = new ArrayList<>();
+    private List<UserVideoHistory> userVideoHistories=new ArrayList<>();
 
     public UserObject() {
+    }
+
+    public List<UserVideoHistory> getUserVideoHistories() {
+        return userVideoHistories;
+    }
+
+    public void setUserVideoHistories(List<UserVideoHistory> userVideoHistories) {
+        this.userVideoHistories = userVideoHistories;
     }
 
     public UUID getId() {
@@ -57,5 +72,13 @@ public class UserObject {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public List<Profile> getProfiles() {
+        return profiles;
+    }
+
+    public void setProfiles(List<Profile> profiles) {
+        this.profiles = profiles;
     }
 }

@@ -14,21 +14,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 
 @RestController
 public class AuthenticationController {
     @Autowired
     private JwtUtil jwtTokenUtil;
     @Autowired
-    HttpSession session;
-    @Autowired
     private AppUserDetailsService userDetailsService;
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private AuthenticationManager authenticationManager;
-    @PostMapping("/authenticate")
+    @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody UserAuthenticationRequest authenticationRequest) throws Exception {
         try {
             authenticationManager.authenticate(
@@ -38,11 +35,11 @@ public class AuthenticationController {
         catch (BadCredentialsException e) {
             return new ResponseEntity<>("Invalid username or password", HttpStatus.BAD_REQUEST);
         }
+
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtTokenUtil.generateToken(userDetails);
         UserAuthenticationResponse res = new UserAuthenticationResponse();res.setJwt(jwt);
-        session.setAttribute("username",userDetails.getUsername());
         return ResponseEntity.ok(res);
 
     }
