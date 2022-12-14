@@ -3,15 +3,21 @@ package com.netflix.backend.entities;
 import javax.persistence.*;
 
 @Entity
-public class Profile {
+public class History {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", updatable = false, nullable = false)
     private long id;
-    private String name;
+    private int duration;
+    @ManyToOne
+    @JoinColumn(name = "video_id")
+    private Video video;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public History() {
+    }
 
     public long getId() {
         return id;
@@ -21,12 +27,20 @@ public class Profile {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public int getDuration() {
+        return duration;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public Video getVideo() {
+        return video;
+    }
+
+    public void setVideo(Video video) {
+        this.video = video;
     }
 
     public User getUser() {

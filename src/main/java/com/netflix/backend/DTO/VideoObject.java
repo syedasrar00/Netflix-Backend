@@ -1,38 +1,29 @@
 package com.netflix.backend.DTO;
 
-import com.netflix.backend.entities.UserVideoHistory;
-
+import javax.persistence.Column;
+import javax.persistence.Id;
 import java.util.UUID;
 
 public class VideoObject {
-    private UUID id;
+
+    private long id;
     private String videoUrl;
     private int videoLength;
     private double rating;
 
-    private UserVideoHistory userVideoHistory;
-
     public VideoObject() {
     }
 
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(long id) {
         this.id = id;
     }
 
     public String getVideoUrl() {
         return videoUrl;
-    }
-
-    public UserVideoHistory getUserVideoHistory() {
-        return userVideoHistory;
-    }
-
-    public void setUserVideoHistory(UserVideoHistory userVideoHistory) {
-        this.userVideoHistory = userVideoHistory;
     }
 
     public void setVideoUrl(String videoUrl) {

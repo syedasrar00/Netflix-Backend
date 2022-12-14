@@ -1,35 +1,47 @@
 package com.netflix.backend.entities;
 
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "videos")
 public class Video {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
+    private long id;
     private String videoUrl;
     private int videoLength;
     private double rating;
-    private UserVideoHistory userVideoHistory;
+    private int noOfResponses;
+    @OneToMany(mappedBy = "video")
+    private List<History> watchHistories;
 
     public Video() {
     }
 
-    public UUID getId() {
+    public List<History> getWatchHistories() {
+        return watchHistories;
+    }
+
+    public void setWatchHistories(List<History> watchHistories) {
+        this.watchHistories = watchHistories;
+    }
+
+    public int getNoOfResponses() {
+        return noOfResponses;
+    }
+
+    public void setNoOfResponses(int noOfResponses) {
+        this.noOfResponses = noOfResponses;
+    }
+
+    public long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(long id) {
         this.id = id;
     }
 

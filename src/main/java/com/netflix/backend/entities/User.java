@@ -14,13 +14,9 @@ import java.util.UUID;
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
+    private long id;
 
     private String name;
     @Column(unique = true)
@@ -29,18 +25,18 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String phoneNumber;
     private int subscription;
-    @OneToMany(cascade= CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user",cascade= CascadeType.ALL,fetch = FetchType.EAGER)
     private List<Profile> profiles;
-    @OneToMany(cascade= CascadeType.ALL,fetch = FetchType.EAGER)
-    private List<UserVideoHistory> userVideoHistories;
+    @OneToMany(mappedBy = "user")
+    private List<History> watchHistories;
     public User() {
     }
 
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -52,20 +48,20 @@ public class User implements UserDetails {
         this.name = name;
     }
 
-    public List<UserVideoHistory> getUserVideoHistories() {
-        return userVideoHistories;
-    }
-
-    public void setUserVideoHistories(List<UserVideoHistory> userVideoHistories) {
-        this.userVideoHistories = userVideoHistories;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<History> getWatchHistories() {
+        return watchHistories;
+    }
+
+    public void setWatchHistories(List<History> watchHistories) {
+        this.watchHistories = watchHistories;
     }
 
     @Override

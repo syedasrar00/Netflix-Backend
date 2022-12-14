@@ -21,7 +21,7 @@ public class ProfileServiceImplementation implements ProfileService {
     @Autowired
     private UserRepository userRepository;
     @Override
-    public String deleteProfile(int profileId) {
+    public String deleteProfile(long profileId) {
         Profile profile = profileRepository.findById(profileId).orElseThrow(()-> new ResourceNotFoundException("Profile","profileId",""+profileId));
         profileRepository.delete(profile);
         return "Profile deleted successfully";
