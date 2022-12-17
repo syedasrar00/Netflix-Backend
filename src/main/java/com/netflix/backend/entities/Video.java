@@ -11,6 +11,7 @@ public class Video {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id", updatable = false, nullable = false)
     private long id;
+    private String name;
     private String videoUrl;
     private int videoLength;
     private double rating;
@@ -19,6 +20,14 @@ public class Video {
     private List<History> watchHistories;
 
     public Video() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<History> getWatchHistories() {
