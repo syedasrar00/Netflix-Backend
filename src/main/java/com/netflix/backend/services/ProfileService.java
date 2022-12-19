@@ -1,8 +1,8 @@
 package com.netflix.backend.services;
 
-import com.netflix.backend.DTO.ProfileObject;
+import com.netflix.backend.DTO.ProfileDTO;
 
 public interface ProfileService {
-    void addProfile(ProfileObject profile);
-    String deleteProfile(long profileId);
+    void addProfile(ProfileDTO profile);
+    String deleteProfile(String profileId);
 }

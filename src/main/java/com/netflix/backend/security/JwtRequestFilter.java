@@ -1,5 +1,6 @@
 package com.netflix.backend.security;
 
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.server.Cookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,11 +21,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
     private AppUserDetailsService userDetailsService;
-
     @Autowired
     private JwtUtil jwtUtil;
-    @Autowired
-    private Cookie cookie;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -46,11 +44,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             if (jwtUtil.validateToken(jwt, user)) {
 
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                        user, null, user.getAuthorities());
+                        user, user.getPassword(), user.getAuthorities());
                 usernamePasswordAuthenticationToken
                         .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                cookie.setName(username);
             }
         }
         chain.doFilter(request, response);

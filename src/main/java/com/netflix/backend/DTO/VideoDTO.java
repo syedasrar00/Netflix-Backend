@@ -1,31 +1,21 @@
-package com.netflix.backend.entities;
+package com.netflix.backend.DTO;
 
+
+import com.netflix.backend.entities.WatchHistory;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-@Entity
-@Table(name = "videos")
-public class Video {
-    @Id
-    @Column(name = "video_id", updatable = false, nullable = false)
+public class VideoDTO {
     private String videoId;
     private String name;
     private String videoPath;
-    @ManyToOne
-    @JoinColumn(name = "series_id")
-    private Series series;
-    @ManyToOne
-    @JoinColumn(name = "show_id")
-    private Show show;
+    private String Series;
+    private String Show;
     private double rating;
     private int videoLength;
     private Date releaseDate;
-
-    public Video() {
-    }
-
     @OneToMany(mappedBy = "video")
     private List<WatchHistory> watchHistories;
 
@@ -53,20 +43,20 @@ public class Video {
         this.videoPath = videoPath;
     }
 
-    public Series getSeries() {
-        return this.series;
+    public String getSeries() {
+        return Series;
     }
 
-    public void setSeries(Series series) {
-        this.series = series;
+    public void setSeries(String series) {
+        Series = series;
     }
 
-    public com.netflix.backend.entities.Show getShow() {
-        return show;
+    public String getShow() {
+        return Show;
     }
 
-    public void setShow(Show show) {
-        this.show = show;
+    public void setShow(String show) {
+        Show = show;
     }
 
     public double getRating() {

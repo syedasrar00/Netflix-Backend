@@ -17,7 +17,7 @@ public class ApiController {
         return ResponseEntity.ok(videoRepository.save(video));
     }
     @GetMapping("/video/download")
-    public ResponseEntity<Video> download(@RequestParam long id){
+    public ResponseEntity<Video> download(@RequestParam String id){
         return ResponseEntity.ok(videoRepository.findById(id).orElseThrow());
     }
 }

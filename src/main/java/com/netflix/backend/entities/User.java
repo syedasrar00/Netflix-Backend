@@ -1,22 +1,22 @@
 package com.netflix.backend.entities;
 
-import org.hibernate.annotations.GenericGenerator;
+import com.netflix.backend.ENUMS.UserRole;
+import com.netflix.backend.ENUMS.UserState;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", updatable = false, nullable = false)
-    private long id;
+    @Column(name = "user_id", updatable = false, nullable = false)
+    private String userId;
 
     private String name;
     @Column(unique = true)
@@ -24,20 +24,21 @@ public class User implements UserDetails {
     private String password;
     @Column(unique = true)
     private String phoneNumber;
-    private int subscription;
-    @OneToMany(mappedBy = "user",cascade= CascadeType.ALL,fetch = FetchType.EAGER)
+    @Enumerated
+    private UserState userState;
+    @Enumerated
+    private UserRole userRole;
+    @OneToMany(mappedBy = "id")
     private List<Profile> profiles;
-    @OneToMany(mappedBy = "user")
-    private List<History> watchHistories;
     public User() {
     }
 
-    public long getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -56,17 +57,9 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public List<History> getWatchHistories() {
-        return watchHistories;
-    }
-
-    public void setWatchHistories(List<History> watchHistories) {
-        this.watchHistories = watchHistories;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return new ArrayList<>();
+        return Collections.singleton(new SimpleGrantedAuthority(this.getUserRole().name()));
     }
 
     public String getPassword() {
@@ -110,19 +103,27 @@ public class User implements UserDetails {
         this.phoneNumber = phoneNumber;
     }
 
+    public UserState getUserState() {
+        return userState;
+    }
+
+    public void setUserState(UserState userState) {
+        this.userState = userState;
+    }
+
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
+    }
+
     public List<Profile> getProfiles() {
         return profiles;
     }
 
     public void setProfiles(List<Profile> profiles) {
         this.profiles = profiles;
-    }
-
-    public int getSubscription() {
-        return subscription;
-    }
-
-    public void setSubscription(int subscription) {
-        this.subscription = subscription;
     }
 }

@@ -1,18 +1,10 @@
 package com.netflix.backend.DTO;
 
-import com.netflix.backend.entities.Profile;
-import com.netflix.backend.entities.History;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
 import javax.validation.constraints.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
-public class UserObject {
+public class UserDTO {
 
-    private long id;
+    private String userId;
     @NotEmpty(message = "name cannot be empty")
     private String name;
     @Email(message = "Not a valid email.")
@@ -23,25 +15,16 @@ public class UserObject {
     @NotEmpty
     @Size(min=10, message="Phone number cannot be at less than 10 characters")
     private String phoneNumber;
-    private List<Profile> profiles = new ArrayList<>();
-    private List<History> watchHistories = new ArrayList<>();
-    public UserObject() {
+    public UserDTO() {
     }
 
-    public List<History> getWatchHistories() {
-        return watchHistories;
+
+    public String getUserId() {
+        return userId;
     }
 
-    public void setWatchHistories(List<History> watchHistories) {
-        this.watchHistories = watchHistories;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -76,11 +59,4 @@ public class UserObject {
         this.phoneNumber = phoneNumber;
     }
 
-    public List<Profile> getProfiles() {
-        return profiles;
-    }
-
-    public void setProfiles(List<Profile> profiles) {
-        this.profiles = profiles;
-    }
 }

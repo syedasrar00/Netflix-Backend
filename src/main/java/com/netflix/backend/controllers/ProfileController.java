@@ -1,6 +1,6 @@
 package com.netflix.backend.controllers;
 
-import com.netflix.backend.DTO.ProfileObject;
+import com.netflix.backend.DTO.ProfileDTO;
 import com.netflix.backend.services.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +13,12 @@ public class ProfileController {
     @Autowired
     private ProfileService profileService;
     @PostMapping("/user/profile")
-    public ResponseEntity<?> createProfile(@Valid @RequestBody ProfileObject profileObject){
-        profileService.addProfile(profileObject);
+    public ResponseEntity<?> createProfile(@Valid @RequestBody ProfileDTO profileDTO){
+        profileService.addProfile(profileDTO);
         return ResponseEntity.ok("");
     }
     @DeleteMapping("user/profile/{profileId}")
-    public ResponseEntity<?> deleteProfile(@PathVariable long profileId){
+    public ResponseEntity<?> deleteProfile(@PathVariable String profileId){
         profileService.deleteProfile(profileId);
         return ResponseEntity.ok("Profile deleted successfully");
     }

@@ -1,13 +1,12 @@
 package com.netflix.backend.services;
 
-import com.netflix.backend.DTO.UserObject;
-import com.netflix.backend.entities.User;
+import com.netflix.backend.DTO.UserDTO;
 
 import java.util.List;
 
 public interface UserServices {
-    String createUser(UserObject userObject);
-    List<UserObject> userList();
+    String createUser(UserDTO userObject);
+    List<UserDTO> userList();
 
     String activateSubscription();
     String deactivateSubscription();
