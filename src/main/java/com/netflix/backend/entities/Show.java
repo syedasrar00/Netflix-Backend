@@ -1,8 +1,8 @@
 package com.netflix.backend.entities;
 
-import com.netflix.backend.ENUMS.Audience;
-import com.netflix.backend.ENUMS.Genre;
-import com.netflix.backend.ENUMS.TypeOfShow;
+import com.netflix.backend.entities.constants.Audience;
+import com.netflix.backend.entities.constants.Genre;
+import com.netflix.backend.entities.constants.TypeOfShow;
 
 import javax.persistence.*;
 import java.util.List;
@@ -14,12 +14,11 @@ public class Show {
     @Column(name = "show_id", updatable = false, nullable = false)
     private String showId;
     private String name;
-    @Enumerated
-    private TypeOfShow typeOfShow;
-    @Enumerated
-    private Genre genre;
-    @Enumerated
-    private Audience audience;
+    private String typeOfShow;
+
+    private String genre;
+
+    private String audience;
     private double rating;
     private int length;
     @OneToMany(mappedBy = "show")
@@ -46,27 +45,27 @@ public class Show {
         this.name = name;
     }
 
-    public TypeOfShow getTypeOfShow() {
+    public String getTypeOfShow() {
         return typeOfShow;
     }
 
-    public void setTypeOfShow(TypeOfShow typeOfShow) {
+    public void setTypeOfShow(String typeOfShow) {
         this.typeOfShow = typeOfShow;
     }
 
-    public Genre getGenre() {
+    public String getGenre() {
         return genre;
     }
 
-    public void setGenre(Genre genre) {
+    public void setGenre(String genre) {
         this.genre = genre;
     }
 
-    public Audience getAudience() {
+    public String getAudience() {
         return audience;
     }
 
-    public void setAudience(Audience audience) {
+    public void setAudience(String audience) {
         this.audience = audience;
     }
 

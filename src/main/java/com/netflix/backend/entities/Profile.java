@@ -1,6 +1,5 @@
 package com.netflix.backend.entities;
 
-import com.netflix.backend.ENUMS.ProfileType;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -9,12 +8,11 @@ import java.util.Date;
 public class Profile {
     @Id
     @Column(name = "profile_id", updatable = false, nullable = false)
-    private String id;
+    private String profileId;
     private String name;
-    @Enumerated
-    private ProfileType profileType;
+    private String profileType;
     private Date createdAt;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -37,19 +35,19 @@ public class Profile {
         this.name = name;
     }
 
-    public String getId() {
-        return id;
+    public String getProfileId() {
+        return profileId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setProfileId(String profileId) {
+        this.profileId = profileId;
     }
 
-    public ProfileType getProfileType() {
+    public String getProfileType() {
         return profileType;
     }
 
-    public void setProfileType(ProfileType profileType) {
+    public void setProfileType(String profileType) {
         this.profileType = profileType;
     }
 

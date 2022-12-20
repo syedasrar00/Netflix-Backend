@@ -2,13 +2,13 @@ package com.netflix.backend.services.implementation;
 
 import com.netflix.backend.DTO.UserDTO;
 import com.netflix.backend.entities.User;
-import com.netflix.backend.ENUMS.UserRole;
-import com.netflix.backend.ENUMS.UserState;
+import com.netflix.backend.entities.constants.VerificationStatus;
+import com.netflix.backend.entities.constants.UserRole;
+import com.netflix.backend.entities.constants.UserState;
 import com.netflix.backend.repositories.UserRepository;
 import com.netflix.backend.services.UserServices;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.server.Cookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,6 +35,8 @@ public class UserServiceImplementation implements UserServices {
         user.setUserId(UUID.randomUUID().toString());
         user.setUserRole(UserRole.ROLE_USER);
         user.setUserState(UserState.ACTIVE);
+        user.setEmailVerificationStatus(VerificationStatus.UNVERIFIED);
+        user.setPhoneVerificationStatus(VerificationStatus.UNVERIFIED);
         userRepo.save(user);
         return "User created Successfully";
     }

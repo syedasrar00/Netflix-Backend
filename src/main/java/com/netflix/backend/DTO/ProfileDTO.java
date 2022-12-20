@@ -1,12 +1,12 @@
 package com.netflix.backend.DTO;
 
-import com.netflix.backend.ENUMS.ProfileType;
+import com.netflix.backend.entities.constants.ProfileType;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 public class ProfileDTO {
-    private String id;
+    private String profileId;
     @NotEmpty(message = "Profile name cannot be empty") //s5 20
     private String name;
     private ProfileType profileType;
@@ -16,12 +16,8 @@ public class ProfileDTO {
     public ProfileDTO() {
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public void setProfileId(String profileId) {
+        this.profileId = profileId;
     }
 
     public ProfileType getProfileType() {

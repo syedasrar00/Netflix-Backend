@@ -1,7 +1,7 @@
 package com.netflix.backend.services.implementation;
 
 import com.netflix.backend.DTO.ProfileDTO;
-import com.netflix.backend.ENUMS.ProfileType;
+import com.netflix.backend.entities.constants.ProfileType;
 import com.netflix.backend.entities.Profile;
 import com.netflix.backend.entities.User;
 import com.netflix.backend.exceptions.ResourceNotFoundException;
@@ -35,7 +35,7 @@ public class ProfileServiceImplementation implements ProfileService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
         Profile profile = modelMapper.map(profileDTO, Profile.class);
-        profile.setId(UUID.randomUUID().toString());
+        profile.setProfileId(UUID.randomUUID().toString());
         profile.setProfileType(ProfileType.GENERAL);
         profile.setUser(user);
         profile.setCreatedAt(new Date());

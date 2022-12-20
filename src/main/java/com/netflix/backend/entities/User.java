@@ -1,7 +1,5 @@
 package com.netflix.backend.entities;
 
-import com.netflix.backend.ENUMS.UserRole;
-import com.netflix.backend.ENUMS.UserState;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,13 +22,26 @@ public class User implements UserDetails {
     private String password;
     @Column(unique = true)
     private String phoneNumber;
-    @Enumerated
-    private UserState userState;
-    @Enumerated
-    private UserRole userRole;
-    @OneToMany(mappedBy = "id")
+
+    private String userState;
+
+    private String userRole;
+
+    private String emailVerificationStatus;
+    private String phoneVerificationStatus;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Profile> profiles;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Otp> otps ;
     public User() {
+    }
+
+    public List<Otp> getOtps() {
+        return otps;
+    }
+
+    public void setOtps(List<Otp> otps) {
+        this.otps = otps;
     }
 
     public String getUserId() {
@@ -59,7 +70,15 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(this.getUserRole().name()));
+        return Collections.singleton(new SimpleGrantedAuthority(this.getUserRole()));
+    }
+
+    public String getPhoneVerificationStatus() {
+        return phoneVerificationStatus;
+    }
+
+    public void setPhoneVerificationStatus(String phoneVerificationStatus) {
+        this.phoneVerificationStatus = phoneVerificationStatus;
     }
 
     public String getPassword() {
@@ -103,20 +122,28 @@ public class User implements UserDetails {
         this.phoneNumber = phoneNumber;
     }
 
-    public UserState getUserState() {
+    public String getUserState() {
         return userState;
     }
 
-    public void setUserState(UserState userState) {
+    public void setUserState(String userState) {
         this.userState = userState;
     }
 
-    public UserRole getUserRole() {
+    public String getUserRole() {
         return userRole;
     }
 
-    public void setUserRole(UserRole userRole) {
+    public void setUserRole(String userRole) {
         this.userRole = userRole;
+    }
+
+    public String getEmailVerificationStatus() {
+        return emailVerificationStatus;
+    }
+
+    public void setEmailVerificationStatus(String emailVerificationStatus) {
+        this.emailVerificationStatus = emailVerificationStatus;
     }
 
     public List<Profile> getProfiles() {
