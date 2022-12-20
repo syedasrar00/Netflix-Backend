@@ -1,10 +1,10 @@
 package com.netflix.backend.services;
 
-import com.netflix.backend.entities.Show;
+import com.netflix.backend.DTO.ShowDTO;
 
 import java.util.List;
 
 public interface ShowService {
-    Show getShowInfo(String id);
-    List<Show> getShowByName(String name);
+    ShowDTO getShowInfo(String showId);
+    List<ShowDTO> getShowByName(String name);
 }

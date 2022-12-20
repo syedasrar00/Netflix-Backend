@@ -7,8 +7,8 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface ShowRepository extends JpaRepository<Show,Long> {
-    @Query(value = "SELECT * FROM Show s WHERE s.show_name CONTAINS :name",
+public interface ShowRepository extends JpaRepository<Show,String> {
+    @Query(value = "SELECT * FROM Show s WHERE s.show_name LIKE %:name%",
             nativeQuery = true)
     List<Show> findByShowName(@Param("name")String name);
 }

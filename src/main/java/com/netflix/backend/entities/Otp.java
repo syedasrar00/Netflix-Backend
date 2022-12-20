@@ -1,8 +1,5 @@
 package com.netflix.backend.entities;
 
-import com.netflix.backend.entities.constants.SentTo;
-import com.netflix.backend.entities.constants.State;
-
 import javax.persistence.*;
 import java.util.Date;
 

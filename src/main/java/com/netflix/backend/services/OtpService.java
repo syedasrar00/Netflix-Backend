@@ -7,4 +7,6 @@ public interface OtpService {
     String verifyPhone(OtpDTO otpDto);
 
     String resetPassword(OtpDTO otpdto);
+
+    void sendOtp();
 }

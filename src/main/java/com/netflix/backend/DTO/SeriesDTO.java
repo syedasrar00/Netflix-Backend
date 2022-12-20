@@ -1,33 +1,22 @@
-package com.netflix.backend.entities;
+package com.netflix.backend.DTO;
 
-import javax.persistence.*;
-import java.util.List;
-@Entity
-public class Series {
-    @Id
-    @Column(name = "series_id", updatable = false, nullable = false)
+public class SeriesDTO {
     private String seriesId;
     private String name;
-    @OneToMany
-    @JoinColumn(name = "show_id")
-    private List<Show> show;
     private int numberOfVideos;
     private double rating;
     private int totalLength;
-    private String thumbnailPath;
-    @OneToMany
-    @JoinColumn(name = "video_id")
-    private List<Video> videos;
+    private String thumbnailLink;
 
-    public Series() {
+    public SeriesDTO() {
     }
 
-    public String getThumbnailPath() {
-        return thumbnailPath;
+    public String getThumbnailLink() {
+        return thumbnailLink;
     }
 
-    public void setThumbnailPath(String thumbnailPath) {
-        this.thumbnailPath = thumbnailPath;
+    public void setThumbnailLink(String thumbnailLink) {
+        this.thumbnailLink = thumbnailLink;
     }
 
     public String getSeriesId() {
@@ -44,14 +33,6 @@ public class Series {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public List<Show> getShow() {
-        return show;
-    }
-
-    public void setShow(List<Show> show) {
-        this.show = show;
     }
 
     public int getNumberOfVideos() {
@@ -76,13 +57,5 @@ public class Series {
 
     public void setTotalLength(int totalLength) {
         this.totalLength = totalLength;
-    }
-
-    public List<Video> getVideos() {
-        return videos;
-    }
-
-    public void setVideos(List<Video> videos) {
-        this.videos = videos;
     }
 }

@@ -1,23 +1,26 @@
 package com.netflix.backend.DTO;
 
-
-import com.netflix.backend.entities.WatchHistory;
-
-import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 public class VideoDTO {
     private String videoId;
     private String name;
     private String videoPath;
-    private String Series;
-    private String Show;
+    private String thumbnailPath;
     private double rating;
     private int videoLength;
     private Date releaseDate;
-    @OneToMany(mappedBy = "video")
-    private List<WatchHistory> watchHistories;
+
+    public VideoDTO() {
+    }
+
+    public String getThumbnailPath() {
+        return thumbnailPath;
+    }
+
+    public void setThumbnailPath(String thumbnailPath) {
+        this.thumbnailPath = thumbnailPath;
+    }
 
     public String getVideoId() {
         return videoId;
@@ -41,22 +44,6 @@ public class VideoDTO {
 
     public void setVideoPath(String videoPath) {
         this.videoPath = videoPath;
-    }
-
-    public String getSeries() {
-        return Series;
-    }
-
-    public void setSeries(String series) {
-        Series = series;
-    }
-
-    public String getShow() {
-        return Show;
-    }
-
-    public void setShow(String show) {
-        Show = show;
     }
 
     public double getRating() {
@@ -83,11 +70,4 @@ public class VideoDTO {
         this.releaseDate = releaseDate;
     }
 
-    public List<WatchHistory> getWatchHistories() {
-        return watchHistories;
-    }
-
-    public void setWatchHistories(List<WatchHistory> watchHistories) {
-        this.watchHistories = watchHistories;
-    }
 }

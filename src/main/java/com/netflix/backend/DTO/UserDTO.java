@@ -7,7 +7,7 @@ public class UserDTO {
     private String userId;
     @NotEmpty(message = "name cannot be empty")
     private String name;
-    @Email(message = "Not a valid email.")
+    @Email(message = "Not a valid Email.")
     private String email;
     @NotEmpty
     @Size(min=8, max=25, message ="password length must be between 8-25 characters")

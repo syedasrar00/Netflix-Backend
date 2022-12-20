@@ -9,10 +9,11 @@ import java.util.List;
 @Table(name = "videos")
 public class Video {
     @Id
-    @Column(name = "video_id", updatable = false, nullable = false)
+    @Column(name="video_id",updatable = false, nullable = false)
     private String videoId;
     private String name;
     private String videoPath;
+    private String thumbnailPath;
     @ManyToOne
     @JoinColumn(name = "series_id")
     private Series series;
@@ -22,12 +23,11 @@ public class Video {
     private double rating;
     private int videoLength;
     private Date releaseDate;
+    @OneToMany(mappedBy = "video", cascade = CascadeType.ALL)
+    private List<WatchHistory> watchHistories;
 
     public Video() {
     }
-
-    @OneToMany(mappedBy = "video")
-    private List<WatchHistory> watchHistories;
 
     public String getVideoId() {
         return videoId;
@@ -54,14 +54,22 @@ public class Video {
     }
 
     public Series getSeries() {
-        return this.series;
+        return series;
+    }
+
+    public String getThumbnailPath() {
+        return thumbnailPath;
+    }
+
+    public void setThumbnailPath(String thumbnailPath) {
+        this.thumbnailPath = thumbnailPath;
     }
 
     public void setSeries(Series series) {
         this.series = series;
     }
 
-    public com.netflix.backend.entities.Show getShow() {
+    public Show getShow() {
         return show;
     }
 

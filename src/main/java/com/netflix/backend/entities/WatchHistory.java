@@ -7,8 +7,8 @@ import java.util.Date;
 public class WatchHistory {
     private int watchedLength;
     @Id
-    @Column(name = "history_id", updatable = false, nullable = false)
-    private String id;
+    @Column(name = "watch_history_id", updatable = false, nullable = false)
+    private String WatchHistoryId;
     @ManyToOne
     @JoinColumn(name = "video_id")
     private Video video;
@@ -21,6 +21,14 @@ public class WatchHistory {
 
 
     public WatchHistory() {
+    }
+
+    public String getWatchHistoryId() {
+        return WatchHistoryId;
+    }
+
+    public void setWatchHistoryId(String watchHistoryId) {
+        WatchHistoryId = watchHistoryId;
     }
 
     public int getWatchedLength() {

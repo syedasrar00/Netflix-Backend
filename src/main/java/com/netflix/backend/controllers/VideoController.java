@@ -14,6 +14,10 @@ public class VideoController {
     public ResponseEntity<?> getVideoUrl(@PathVariable String videoId){
         return ResponseEntity.ok(videoService.getVideoUrl(videoId));
     }
+    @GetMapping("/video/{videoId}/thumbnail")
+    public ResponseEntity<?> getVideoThumbnailUrl(@PathVariable String videoId){
+        return ResponseEntity.ok(videoService.getVideoThumbnailUrl(videoId));
+    }
     @PostMapping("/video/{videoId}/rating")
     public ResponseEntity<?> setRating(@PathVariable String videoId,@RequestParam("rating") double rating){
         videoService.setRating(videoId,rating);

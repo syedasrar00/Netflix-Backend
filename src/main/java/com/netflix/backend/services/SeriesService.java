@@ -1,7 +1,7 @@
 package com.netflix.backend.services;
 
-import com.netflix.backend.entities.Series;
+import com.netflix.backend.DTO.SeriesDTO;
 
 public interface SeriesService {
-    Series getSeriesInfo(String id);
+    SeriesDTO getSeriesInfo(String seriesId);
 }
