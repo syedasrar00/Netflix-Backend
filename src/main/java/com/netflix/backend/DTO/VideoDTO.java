@@ -10,7 +10,7 @@ public class VideoDTO {
     private double rating;
     private int videoLength;
     private Date releaseDate;
-
+private int noOfResponses;
     public VideoDTO() {
     }
 

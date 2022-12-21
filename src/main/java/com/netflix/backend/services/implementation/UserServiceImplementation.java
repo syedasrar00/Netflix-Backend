@@ -50,16 +50,22 @@ public class UserServiceImplementation implements UserServices {
     public String activateSubscription() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
-        user.setUserRole(UserRole.ROLE_CUSTOMER);
-        userRepo.save(user);
-        return "Subscription activated successfully";
+        if (user.getUserRole().equals(UserRole.ROLE_USER)) {
+            user.setUserRole(UserRole.ROLE_CUSTOMER);
+            userRepo.save(user);
+            return "Subscription activated successfully";
+        }
+        return "User is already subscribed";
     }
     @Override
     public String deactivateSubscription() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
-        user.setUserRole(UserRole.ROLE_USER);
-        userRepo.save(user);
-        return "Subscription cancelled successfully";
+        if (user.getUserRole().equals(UserRole.ROLE_CUSTOMER)) {
+            user.setUserRole(UserRole.ROLE_USER);
+            userRepo.save(user);
+            return "Subscription deactivated successfully";
+        }
+        return "User is already not subscribed";
     }
 }

@@ -9,7 +9,7 @@ public class Otp {
     @Column(name = "otp_id", updatable = false, nullable = false)
     private String otpId;
     @ManyToOne
-    @JoinColumn(name = "user_user_id")
+    @JoinColumn(name = "user_id")
     private User user;
     private String otpNumber;
     private String state;

@@ -29,7 +29,7 @@ public class User implements UserDetails {
 
     private String emailVerificationStatus;
     private String phoneVerificationStatus;
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
     private List<Profile> profiles;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Otp> otps ;

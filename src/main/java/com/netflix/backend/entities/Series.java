@@ -8,15 +8,14 @@ public class Series {
     @Column(name = "series_id", updatable = false, nullable = false)
     private String seriesId;
     private String name;
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "show_id")
-    private List<Show> show;
+    private Show show;
     private int numberOfVideos;
     private double rating;
     private int totalLength;
     private String thumbnailPath;
-    @OneToMany
-    @JoinColumn(name = "video_id")
+    @OneToMany(mappedBy = "series", cascade = CascadeType.ALL)
     private List<Video> videos;
 
     public Series() {
@@ -46,11 +45,11 @@ public class Series {
         this.name = name;
     }
 
-    public List<Show> getShow() {
+    public Show getShow() {
         return show;
     }
 
-    public void setShow(List<Show> show) {
+    public void setShow(Show show) {
         this.show = show;
     }
 

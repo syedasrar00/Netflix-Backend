@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class VerificationController {
     @Autowired
     private OtpService otpService;
-    @PostMapping("/user/Email")
+    @PostMapping("/user/email")
     public ResponseEntity<String> verifyEmail(@RequestBody OtpDTO otpDTO){
         return new ResponseEntity<>(otpService.verifyEmail(otpDTO), HttpStatus.OK);
     }
@@ -24,12 +24,11 @@ public class VerificationController {
     }
     @PostMapping("/user/password")
     public ResponseEntity<String> resetPassword(@RequestBody OtpDTO otpDTO){
-        otpService.sendOtp();
         return new ResponseEntity<>(otpService.resetPassword(otpDTO), HttpStatus.OK);
     }
     @GetMapping("/user/email/otp")
-    public ResponseEntity<Void> sendOtp(){
-        otpService.sendOtp();
+    public ResponseEntity<Void> sendOtpEmail(){
+        otpService.sendOtpOnEmail();
         return ResponseEntity.ok().build();
     }
 }

@@ -7,7 +7,6 @@ import com.netflix.backend.entities.constants.VerificationStatus;
 import com.netflix.backend.entities.constants.SentTo;
 import com.netflix.backend.entities.constants.State;
 import com.netflix.backend.exceptions.InvalidCredentialsException;
-import com.netflix.backend.exceptions.ResourceNotFoundException;
 import com.netflix.backend.repositories.OtpRepository;
 import com.netflix.backend.repositories.UserRepository;
 import com.netflix.backend.services.EmailService;
@@ -19,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -36,8 +36,11 @@ public class OtpServiceImplementation implements OtpService {
     public String verifyEmail(OtpDTO otpDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
-        Otp otp = otpRepository.findByUserAndOtpNumber(user, otpDto.getOtp()).orElseThrow();
-        if(otp.getSentTo().equals(SentTo.EMAIL) && otp.getState().equals(State.UNUSED)){
+        if(!(otpDto.getEmail().equals(user.getEmail()))){
+            throw new InvalidCredentialsException("Email ID is incorrect");
+        }
+        Otp otp = otpRepository.findByUserAndOtpNumber(user.getUserId(), otpDto.getOtp()).orElseThrow(()-> new InvalidCredentialsException("Not a valid OTP"));
+        if(otp.getSentTo().equals(SentTo.EMAIL)){
             user.setEmailVerificationStatus(VerificationStatus.VERIFIED);
             userRepository.save(user);
             otp.setState(State.USED);
@@ -57,10 +60,7 @@ public class OtpServiceImplementation implements OtpService {
         if(!(otpDto.getPhoneNo().equals(user.getPhoneNumber()))){
             throw new InvalidCredentialsException("Phone no incorrect");
         }
-        Otp otp = otpRepository.findByUserAndOtpNumber(user, otpDto.getOtp()).orElseThrow();
-        if(!(otpDto.getOtp().equals(otp.getOtpNumber()) || otp.getState().equals(State.UNUSED))){
-            throw new InvalidCredentialsException("OTP incorrect");
-        }
+        Otp otp = otpRepository.findByUserAndOtpNumber(user.getUserId(), otpDto.getOtp()).orElseThrow(()-> new InvalidCredentialsException("Not a valid OTP"));
         if(otp.getSentTo().equals(SentTo.PHONE)){
             user.setPhoneVerificationStatus(VerificationStatus.VERIFIED);
             userRepository.save(user);
@@ -81,10 +81,7 @@ public class OtpServiceImplementation implements OtpService {
         if(!(otpDto.getEmail().equals(user.getEmail()))){
             throw new InvalidCredentialsException("Incorrect Email");
         }
-        Otp otp = otpRepository.findByUserAndOtpNumber(user, otpDto.getOtp()).orElseThrow();
-        if(!(otpDto.getOtp().equals(otp.getOtpNumber()) || otp.getState().equals(State.UNUSED))){
-            throw new InvalidCredentialsException("OTP incorrect");
-        }
+        Otp otp = otpRepository.findByUserAndOtpNumber(user.getUserId(), otpDto.getOtp()).orElseThrow(()->new InvalidCredentialsException("OTP incorrect"));
         if(otp.getSentTo().equals(SentTo.EMAIL)){
             user.setPassword(passwordEncoder.encode(otpDto.getPassword()));
             userRepository.save(user);
@@ -98,21 +95,20 @@ public class OtpServiceImplementation implements OtpService {
     }
 
     @Override
-    public void sendOtp() {
+    public void sendOtpOnEmail() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
-        System.out.println("hello");
-        Otp otp = null;
-        try {
-            otp = otpRepository.findByUser(user).orElseThrow(()-> new ResourceNotFoundException("Otp"));
-        }
-        catch(ResourceNotFoundException e){
-            e.printStackTrace();
-        }
-        if(otp==null){
-            otp = new Otp();
-            otp.setOtpId(UUID.randomUUID().toString());
-        }
+        if(user.getEmailVerificationStatus().equals(VerificationStatus.VERIFIED))
+            throw new InvalidCredentialsException("email is already verified!");
+        List<Otp> otps = otpRepository.findUnusedByUser(user.getUserId());
+        otps.stream().forEach(e-> {
+            if(e.getSentTo().equals(SentTo.EMAIL)){
+                e.setState(State.EXPIRED);
+                otpRepository.save(e);
+            }
+        });
+        Otp otp = new Otp();
+        otp.setOtpId(UUID.randomUUID().toString());
         otp.setState(State.UNUSED);
         otp.setCreatedAt(new Date());
         otp.setUser(user);

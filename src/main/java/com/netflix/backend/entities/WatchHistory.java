@@ -5,30 +5,29 @@ import java.util.Date;
 
 @Entity
 public class WatchHistory {
-    private int watchedLength;
     @Id
     @Column(name = "watch_history_id", updatable = false, nullable = false)
-    private String WatchHistoryId;
+    private String watchHistoryId;
+    private int watchedLength;
     @ManyToOne
     @JoinColumn(name = "video_id")
     private Video video;
     @ManyToOne
-    @JoinColumn(name = "profile_id", unique = true)
+    @JoinColumn(name = "profile_id")
     private Profile profile;
     private Double rating;
     private Date firstWatchedAt;
     private Date lastWatchedAt;
 
-
     public WatchHistory() {
     }
 
     public String getWatchHistoryId() {
-        return WatchHistoryId;
+        return watchHistoryId;
     }
 
     public void setWatchHistoryId(String watchHistoryId) {
-        WatchHistoryId = watchHistoryId;
+        this.watchHistoryId = watchHistoryId;
     }
 
     public int getWatchedLength() {

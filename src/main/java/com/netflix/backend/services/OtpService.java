@@ -8,5 +8,5 @@ public interface OtpService {
 
     String resetPassword(OtpDTO otpdto);
 
-    void sendOtp();
+    void sendOtpOnEmail();
 }

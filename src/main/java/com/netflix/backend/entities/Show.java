@@ -18,9 +18,9 @@ public class Show {
     private double rating;
     private int length;
     private String thumbnailPath;
-    @OneToMany(mappedBy = "show")
+    @OneToMany(mappedBy = "show", cascade = CascadeType.ALL)
     private List<Video> videos;
-    @OneToMany(mappedBy = "show")
+    @OneToMany(mappedBy = "show", cascade = CascadeType.ALL)
     private List<Series> series;
 
     public Show() {

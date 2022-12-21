@@ -12,6 +12,7 @@ public class Video {
     @Column(name="video_id",updatable = false, nullable = false)
     private String videoId;
     private String name;
+    private int noOfResponses;
     private String videoPath;
     private String thumbnailPath;
     @ManyToOne
@@ -27,6 +28,14 @@ public class Video {
     private List<WatchHistory> watchHistories;
 
     public Video() {
+    }
+
+    public int getNoOfResponses() {
+        return noOfResponses;
+    }
+
+    public void setNoOfResponses(int noOfResponses) {
+        this.noOfResponses = noOfResponses;
     }
 
     public String getVideoId() {

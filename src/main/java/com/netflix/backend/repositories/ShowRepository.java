@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface ShowRepository extends JpaRepository<Show,String> {
-    @Query(value = "SELECT * FROM Show s WHERE s.show_name LIKE %:name%",
+    @Query(value = "SELECT * FROM shows s WHERE s.name LIKE %:name%",
             nativeQuery = true)
     List<Show> findByShowName(@Param("name")String name);
 }

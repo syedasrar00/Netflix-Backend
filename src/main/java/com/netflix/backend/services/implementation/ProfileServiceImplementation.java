@@ -4,8 +4,10 @@ import com.netflix.backend.DTO.ProfileDTO;
 import com.netflix.backend.entities.constants.ProfileType;
 import com.netflix.backend.entities.Profile;
 import com.netflix.backend.entities.User;
+import com.netflix.backend.exceptions.InvalidCredentialsException;
 import com.netflix.backend.exceptions.ResourceNotFoundException;
 import com.netflix.backend.repositories.ProfileRepository;
+import com.netflix.backend.repositories.UserRepository;
 import com.netflix.backend.services.ProfileService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +24,20 @@ public class ProfileServiceImplementation implements ProfileService {
     @Autowired
     private ProfileRepository profileRepository;
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private ModelMapper modelMapper;
     @Override
     public String deleteProfile(String profileId) {
-        Profile profile = profileRepository.findById(profileId).orElseThrow(()-> new ResourceNotFoundException("Profile"));
-        profileRepository.delete(profile);
-        return "Profile deleted successfully";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+            Profile profile = profileRepository.findById(profileId).orElseThrow(()-> new ResourceNotFoundException("Profile"));
+        if(profile.getUser().getUserId().equals(user.getUserId())){
+
+            profileRepository.delete(profile);
+            return "Profile deleted successfully";
+        }
+        throw new InvalidCredentialsException("profile not linked with current user");
     }
 
     @Override
@@ -40,6 +50,6 @@ public class ProfileServiceImplementation implements ProfileService {
         profile.setUser(user);
         profile.setCreatedAt(new Date());
         user.getProfiles().add(profile);
-        profileRepository.save(profile);
+        userRepository.save(user);
     }
 }

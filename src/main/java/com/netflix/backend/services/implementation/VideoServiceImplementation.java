@@ -1,6 +1,7 @@
 package com.netflix.backend.services.implementation;
 
 import com.netflix.backend.entities.Video;
+import com.netflix.backend.exceptions.InvalidCredentialsException;
 import com.netflix.backend.exceptions.ResourceNotFoundException;
 import com.netflix.backend.repositories.AwsS3Repository;
 import com.netflix.backend.repositories.VideoRepository;
@@ -28,7 +29,13 @@ public class VideoServiceImplementation implements VideoService {
     }
 
     @Override
-    public void setRating(String id, double rating) {
-
+    public void setRating(String videoId, double rating) {
+        if(rating>10 && rating<0)
+            throw new InvalidCredentialsException("Rating should be between 0-10");
+        Video video = videoRepo.findById(videoId).orElseThrow(()-> new ResourceNotFoundException("Video"));
+        video.setNoOfResponses(video.getNoOfResponses()+1);
+        double newRating = (video.getRating()+rating)/ video.getNoOfResponses();
+        video.setRating(newRating);
+        videoRepo.save(video);
     }
 }
