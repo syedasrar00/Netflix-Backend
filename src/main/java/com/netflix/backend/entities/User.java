@@ -22,7 +22,6 @@ public class User implements UserDetails {
     private String password;
     @Column(unique = true)
     private String phoneNumber;
-
     private String userState;
 
     private String userRole;
@@ -70,7 +69,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(this.getUserRole()));
+        return Collections.singletonList(new SimpleGrantedAuthority(this.getUserRole()));
     }
 
     public String getPhoneVerificationStatus() {

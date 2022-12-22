@@ -6,8 +6,6 @@ import java.util.List;
 
 public interface UserServices {
     String createUser(UserDTO userObject);
-    List<UserDTO> userList();
-
     String activateSubscription();
     String deactivateSubscription();
 

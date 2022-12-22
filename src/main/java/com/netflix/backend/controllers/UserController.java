@@ -21,12 +21,12 @@ public class UserController {
         return new ResponseEntity<>(userServices.createUser(userObject), HttpStatus.OK);
     }
     @PostMapping("/user/subscription")
-    @Secured(UserRole.ROLE_USER)
+    @Secured(UserRole.USER)
     public ResponseEntity<String> activateSubscription(){
         return ResponseEntity.ok(userServices.activateSubscription());
     }
     @DeleteMapping("/user/subscription")
-    @Secured(UserRole.ROLE_CUSTOMER)
+    @Secured(UserRole.CUSTOMER)
     public ResponseEntity<String> deactivateSubscription(){
         return ResponseEntity.ok(userServices.deactivateSubscription());
     }

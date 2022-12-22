@@ -1,6 +1,7 @@
 package com.netflix.backend.services.implementation;
 
 import com.netflix.backend.DTO.OtpDTO;
+import com.netflix.backend.exceptions.ResourceNotFoundException;
 import com.netflix.backend.entities.Otp;
 import com.netflix.backend.entities.User;
 import com.netflix.backend.entities.constants.VerificationStatus;
@@ -73,15 +74,10 @@ public class OtpServiceImplementation implements OtpService {
 
         return "Phone verified successfully";
     }
-
     @Override
     public String resetPassword(OtpDTO otpDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-        if(!(otpDto.getEmail().equals(user.getEmail()))){
-            throw new InvalidCredentialsException("Incorrect Email");
-        }
-        Otp otp = otpRepository.findByUserAndOtpNumber(user.getUserId(), otpDto.getOtp()).orElseThrow(()->new InvalidCredentialsException("OTP incorrect"));
+        User user = userRepository.findByEmail(otpDto.getEmail()).orElseThrow(()-> new InvalidCredentialsException("user"));
+        Otp otp = otpRepository.findByUserAndOtpNumber(user.getUserId(), otpDto.getOtp()).orElseThrow(()->new InvalidCredentialsException("OTP is incorrect!"));
         if(otp.getSentTo().equals(SentTo.EMAIL)){
             user.setPassword(passwordEncoder.encode(otpDto.getPassword()));
             userRepository.save(user);
@@ -118,5 +114,28 @@ public class OtpServiceImplementation implements OtpService {
         otp.setOtpNumber(otpNum+"");
         otpRepository.save(otp);
         emailSender.sendSimpleMail(user.getEmail(), "OTP",otp.getOtpNumber());
+    }
+    @Override
+    public String sendOtp(OtpDTO otpDTO) {
+        User user = userRepository.findByEmail(otpDTO.getEmail()).orElseThrow(()-> new ResourceNotFoundException("user"));
+        List<Otp> otps = otpRepository.findUnusedByUser(user.getUserId());
+        otps.stream().forEach(e-> {
+            if(e.getSentTo().equals(SentTo.EMAIL)){
+                e.setState(State.EXPIRED);
+                otpRepository.save(e);
+            }
+        });
+        Otp otp = new Otp();
+        otp.setOtpId(UUID.randomUUID().toString());
+        otp.setState(State.UNUSED);
+        otp.setCreatedAt(new Date());
+        otp.setUser(user);
+        otp.setSentTo(SentTo.EMAIL);
+        int otpNum = (int) ((Math.random()*899999)+100000);
+        System.out.println(otpNum);
+        otp.setOtpNumber(otpNum+"");
+        otpRepository.save(otp);
+        emailSender.sendSimpleMail(user.getEmail(), "OTP",otp.getOtpNumber());
+        return "otp Sent successfully";
     }
 }

@@ -5,6 +5,7 @@ import com.netflix.backend.entities.User;
 import com.netflix.backend.entities.constants.VerificationStatus;
 import com.netflix.backend.entities.constants.UserRole;
 import com.netflix.backend.entities.constants.UserState;
+import com.netflix.backend.exceptions.DuplicateEntryException;
 import com.netflix.backend.repositories.UserRepository;
 import com.netflix.backend.services.UserServices;
 import org.modelmapper.ModelMapper;
@@ -14,9 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImplementation implements UserServices {
@@ -28,30 +27,31 @@ public class UserServiceImplementation implements UserServices {
     private ModelMapper modelMapper;
     @Override
     public String createUser(UserDTO userObject) {
-        User user = modelMapper.map(userObject,User.class);
-        String password = user.getPassword();
-        String encodedPassword = passwordEncoder.encode(password);
-        user.setPassword(encodedPassword);
-        user.setUserId(UUID.randomUUID().toString());
-        user.setUserRole(UserRole.ROLE_USER);
-        user.setUserState(UserState.ACTIVE);
-        user.setEmailVerificationStatus(VerificationStatus.UNVERIFIED);
-        user.setPhoneVerificationStatus(VerificationStatus.UNVERIFIED);
-        userRepo.save(user);
-        return "User created Successfully";
+        if(userRepo.findByEmail(userObject.getEmail()).orElse(null)==null) {
+            if(userRepo.findByPhoneNumber(userObject.getPhoneNumber()).orElse(null)==null){
+                User user = modelMapper.map(userObject, User.class);
+                String password = user.getPassword();
+                String encodedPassword = passwordEncoder.encode(password);
+                user.setPassword(encodedPassword);
+                user.setUserId(UUID.randomUUID().toString());
+                user.setUserRole(UserRole.USER);
+                user.setUserState(UserState.ACTIVE);
+                user.setEmailVerificationStatus(VerificationStatus.UNVERIFIED);
+                user.setPhoneVerificationStatus(VerificationStatus.UNVERIFIED);
+                userRepo.save(user);
+                return "User created Successfully";
+            }
+            else throw new DuplicateEntryException("Phone number already exists");
+        }
+        else throw new DuplicateEntryException("Email already exists");
     }
 
-    @Override
-    public List<UserDTO> userList() {
-        List<User> userList = userRepo.findAll();
-        return userList.stream().map(e-> modelMapper.map(e,UserDTO.class)).collect(Collectors.toList());
-    }
     @Override
     public String activateSubscription() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
-        if (user.getUserRole().equals(UserRole.ROLE_USER)) {
-            user.setUserRole(UserRole.ROLE_CUSTOMER);
+        if (user.getUserRole().equals(UserRole.USER)) {
+            user.setUserRole(UserRole.CUSTOMER);
             userRepo.save(user);
             return "Subscription activated successfully";
         }
@@ -61,8 +61,8 @@ public class UserServiceImplementation implements UserServices {
     public String deactivateSubscription() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
-        if (user.getUserRole().equals(UserRole.ROLE_CUSTOMER)) {
-            user.setUserRole(UserRole.ROLE_USER);
+        if (user.getUserRole().equals(UserRole.CUSTOMER)) {
+            user.setUserRole(UserRole.USER);
             userRepo.save(user);
             return "Subscription deactivated successfully";
         }

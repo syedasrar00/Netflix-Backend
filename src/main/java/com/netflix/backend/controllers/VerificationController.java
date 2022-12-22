@@ -26,8 +26,17 @@ public class VerificationController {
     public ResponseEntity<String> resetPassword(@RequestBody OtpDTO otpDTO){
         return new ResponseEntity<>(otpService.resetPassword(otpDTO), HttpStatus.OK);
     }
+    @PostMapping("/user/password/otp")
+    public ResponseEntity<String> sendOtpToResetPassword(@RequestBody OtpDTO otpDTO){
+        return new ResponseEntity<>(otpService.sendOtp(otpDTO), HttpStatus.OK);
+    }
     @GetMapping("/user/email/otp")
     public ResponseEntity<Void> sendOtpEmail(){
+        otpService.sendOtpOnEmail();
+        return ResponseEntity.ok().build();
+    }
+    @GetMapping("/user/phoneNo/otp")
+    public ResponseEntity<Void> sendOtpPhone(){
         otpService.sendOtpOnEmail();
         return ResponseEntity.ok().build();
     }

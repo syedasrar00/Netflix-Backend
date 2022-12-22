@@ -16,7 +16,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.UUID;
 
@@ -30,45 +29,41 @@ public class WatchHistoryServiceImplementation implements WatchHistoryService {
     private ProfileRepository profileRepository;
     @Override
     public void setWatchHistory(WatchHistoryDTO watchTime, String videoId) {
-        Video video =  videoRepository.findById(videoId).orElseThrow(()-> new ResourceNotFoundException("Video"));
-        if(watchTime.getWatchTime()>video.getVideoLength()*60 || watchTime.getWatchTime()<0)
-            throw new InvalidCredentialsException("Not a valid watchtime");
-        Profile profile = profileRepository.findById(watchTime.getProfileId()).orElseThrow(()-> new ResourceNotFoundException("Profile"));
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-        if(profile.getUser().getUserId().equals(user.getUserId())) {
-            WatchHistory watchHistory = null;
-            try{
-                watchHistory = watchHistoryRepository.findByVideoIdProfileId(video.getVideoId(),profile.getProfileId());
-            }
-            catch(Exception ex){
-                ex.printStackTrace();
-            }
-            if(watchHistory == null){
-                watchHistory = new WatchHistory();
-                watchHistory.setWatchHistoryId(UUID.randomUUID().toString());
-                watchHistory.setFirstWatchedAt(new Date());
-                watchHistory.setVideo(video);
-                watchHistory.setProfile(profile);
-                watchHistory.setRating(video.getRating());
-                watchHistory.setLastWatchedAt(new Date());
-                watchHistory.setWatchedLength(watchTime.getWatchTime());
-                watchHistoryRepository.save(watchHistory);
-                return;
-            }else{
-                watchHistory.setLastWatchedAt(new Date());
-                watchHistory.setWatchedLength(watchTime.getWatchTime());
-                watchHistoryRepository.save(watchHistory);
-            }
+        Video video = videoRepository.findById(videoId).orElseThrow(() -> new ResourceNotFoundException("Video"));
+        if (watchTime.getWatchTime() <= video.getVideoLength() * 60 && watchTime.getWatchTime() >= 0) {
+            Profile profile = profileRepository.findById(watchTime.getProfileId()).orElseThrow(() -> new ResourceNotFoundException("Profile"));
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User user = (User) authentication.getPrincipal();
+            if (profile.getUser().getUserId().equals(user.getUserId())) {
+                WatchHistory watchHistory = watchHistoryRepository.findByVideoIdProfileId(video.getVideoId(), profile.getProfileId()).orElse(null);
+                if (watchHistory == null) {
+                    watchHistory = new WatchHistory();
+                    watchHistory.setWatchHistoryId(UUID.randomUUID().toString());
+                    watchHistory.setFirstWatchedAt(new Date());
+                    watchHistory.setVideo(video);
+                    watchHistory.setProfile(profile);
+                    watchHistory.setRating(video.getRating());
+                    watchHistory.setLastWatchedAt(new Date());
+                    watchHistory.setWatchedLength(watchTime.getWatchTime());
+                    watchHistoryRepository.save(watchHistory);
+                    return;
+                } else {
+                    watchHistory.setLastWatchedAt(new Date());
+                    watchHistory.setWatchedLength(watchTime.getWatchTime());
+                    watchHistoryRepository.save(watchHistory);
+                }
+            } else
+                throw new InvalidCredentialsException("Invalid profileId");
         }
-        else
-            throw new InvalidCredentialsException("Invalid profileId");
+        throw new InvalidCredentialsException("Not a valid watchtime");
     }
 
     @Override
-    public int getWatchHistory(String videoId) {
+    public int getWatchHistory(String videoId,String profileId) {
         Video video =  videoRepository.findById(videoId).orElseThrow(()-> new ResourceNotFoundException("Video"));
-        WatchHistory w = watchHistoryRepository.findByVideo(video).orElseThrow(()-> new ResourceNotFoundException("Watch History"));
+        Profile profile = profileRepository.findById(profileId).orElseThrow(() -> new ResourceNotFoundException("Profile"));
+        WatchHistory w = watchHistoryRepository.findByVideoIdProfileId(videoId,profileId).orElse(null);
+        if(w==null) return 0;
         return w.getWatchedLength();
     }
 }

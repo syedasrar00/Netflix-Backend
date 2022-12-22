@@ -1,6 +1,8 @@
 package com.netflix.backend.security;
 
 
+import com.netflix.backend.entities.Token;
+import com.netflix.backend.services.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +19,8 @@ import java.io.IOException;
 
 @Service
 public class JwtRequestFilter extends OncePerRequestFilter {
+    @Autowired
+    TokenService tokenService;
 
     @Autowired
     private AppUserDetailsService userDetailsService;
@@ -36,17 +40,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             jwt = authorizationHeader.substring(7);
             username = jwtUtil.extractUsername(jwt);
         }
-
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails user  = this.userDetailsService.loadUserByUsername(username);
-
-            if (jwtUtil.validateToken(jwt, user)) {
-
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                        user, user.getPassword(), user.getAuthorities());
-                usernamePasswordAuthenticationToken
-                        .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            Token token = tokenService.getToken(username);
+            if(token.getJwt().equals(jwt)) {
+                UserDetails user = this.userDetailsService.loadUserByUsername(username);
+                if (jwtUtil.validateToken(jwt, user)) {
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                            user, user.getPassword(), user.getAuthorities());
+                    usernamePasswordAuthenticationToken
+                            .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                }
             }
         }
         chain.doFilter(request, response);

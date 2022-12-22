@@ -1,10 +1,13 @@
 package com.netflix.backend.exceptions;
 
 public class ResourceNotFoundException extends RuntimeException {
-    String resource;
+    String message;
 
-    public ResourceNotFoundException(String resource) {
-        super(resource+" not found");
-        this.resource = resource;
+    public ResourceNotFoundException(String message) {
+        this.message = message+ " not found!";
+    }
+    @Override
+    public String getMessage(){
+        return this.message;
     }
 }
