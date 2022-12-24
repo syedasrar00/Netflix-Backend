@@ -9,9 +9,9 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 
 @Configuration
 public class AwsConfiguration {
-    @Value("${aws.accesskey}")
+    @Value("${gpt.accesskey}")
     private String accessKey;
-    @Value("${aws.secretkey}")
+    @Value("${gpt.secretkey}")
     private String secretKey;
 
     @Bean

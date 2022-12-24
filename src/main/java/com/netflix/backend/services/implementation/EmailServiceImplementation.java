@@ -1,7 +1,9 @@
 package com.netflix.backend.services.implementation;
 
+import com.netflix.backend.exceptions.ServerErrorException;
 import com.netflix.backend.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -10,7 +12,8 @@ import org.springframework.stereotype.Service;
 public class EmailServiceImplementation implements EmailService {
     @Autowired
     private JavaMailSender javaMailSender;
-    private String sender = System.getenv("email");
+    @Value("${spring.mail.username}")
+    private String sender;
     public void sendSimpleMail(final String toEmail, final String subject, final String content){
         try {
             SimpleMailMessage mailMessage
@@ -21,10 +24,9 @@ public class EmailServiceImplementation implements EmailService {
             mailMessage.setText(content);
             mailMessage.setSubject(subject);
             javaMailSender.send(mailMessage);
-            System.out.println("Otp Sent Successfully...");
         }
         catch (Exception e) {
-            System.out.println("Error while Sending Mail");
+            throw new ServerErrorException("Error while Sending Mail");
         }
     }
 }

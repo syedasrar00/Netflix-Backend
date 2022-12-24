@@ -37,7 +37,7 @@ public class VerificationController {
     }
     @GetMapping("/user/phoneNo/otp")
     public ResponseEntity<Void> sendOtpPhone(){
-        otpService.sendOtpOnEmail();
+        otpService.sendOtpOnPhone();
         return ResponseEntity.ok().build();
     }
 }

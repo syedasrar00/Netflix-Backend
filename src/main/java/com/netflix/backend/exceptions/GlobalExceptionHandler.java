@@ -1,6 +1,7 @@
 package com.netflix.backend.exceptions;
 
-import org.springframework.dao.DataIntegrityViolationException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -8,7 +9,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,5 +39,18 @@ public class GlobalExceptionHandler {
     public  ResponseEntity<?> duplicateEntryExceptionExceptionHandler(DuplicateEntryException ex){
         String message = ex.getMessage();
         return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(ServerErrorException.class)
+    public  ResponseEntity<?> MailSMSExceptionHandler(ServerErrorException ex){
+        String message = ex.getMessage();
+        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    @ExceptionHandler(ExpiredJwtException.class)
+    public  ResponseEntity<?> JWTExpiredExceptionHandler(){
+        return new ResponseEntity<>("JWT token has expired", HttpStatus.UNAUTHORIZED);
+    }
+    @ExceptionHandler(SignatureException.class)
+    public  ResponseEntity<?> InvalidJWTExceptionHandler(){
+        return new ResponseEntity<>("Not a valid JWT token", HttpStatus.UNAUTHORIZED);
     }
 }

@@ -9,6 +9,7 @@ public interface OtpService {
     String resetPassword(OtpDTO otpdto);
 
     void sendOtpOnEmail();
+    void sendOtpOnPhone();
 
     String sendOtp(OtpDTO otpDTO);
 }
