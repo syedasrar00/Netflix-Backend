@@ -1,4 +1,4 @@
-# Spring Boot Application: [Application Name]
+# Spring Boot Application: Netflix-Backend
 
 
 ## Overview
