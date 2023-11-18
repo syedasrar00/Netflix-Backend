@@ -18,7 +18,7 @@ This Spring Boot application is designed with modular controllers, offering vari
 
 - **Framework:** `Spring Boot`
 - **Languages:** `Java`, `Javascript`
-- **Database:** `[Database Name]`
+- **Database:** `AWS RDB`
 
 ## How to Use
 
